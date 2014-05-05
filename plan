@@ -1,0 +1,13 @@
+Short-term:
+1. Treebank characterbased:
+	1. MLP
+	2. RNN utan clipping / norm
+	3. RNN med clipping / norm
+
+Long-term:
+2. RNN phone classification
+	1. samples
+	2. fourier
+3. RNN generation
+	1. samples
+	2. fourier
