@@ -1,0 +1,56 @@
+!obj:pylearn2.train.Train {
+    dataset: &train !obj:penntree.PennTreebank {
+        which_set: 'train',
+        chars_or_words: 'chars',
+        ngram_size: &ngram_size 11
+    },
+    model: !obj:pylearn2.models.mlp.MLP {
+        layers: [
+            !obj:pylearn2.models.mlp.RectifiedLinear {
+                layer_name: 'h0',
+                dim: 50,
+                irange: 0.01
+            },
+            !obj:pylearn2.models.mlp.Softmax {
+                n_classes: 50,
+                layer_name: 'softmax',
+                irange: 0.01,
+            }
+        ],
+        input_space: !obj:pylearn2.space.VectorSpace {
+            dim: 500,
+        }
+    },
+    algorithm: !obj:pylearn2.training_algorithms.sgd.SGD {
+        batch_size: 256,
+        learning_rate: 4.0,
+        batches_per_iter: 5,
+        monitoring_dataset: {
+            'train' : *train,
+            'valid' : !obj:penntree.PennTreebank {
+                which_set: 'valid',
+                chars_or_words: 'chars',
+                ngram_size: *ngram_size
+            }
+        },
+        #cost: !obj:pylearn2.costs.cost.SumOfCosts { costs: [
+        #    !obj:pylearn2.costs.mlp.Default {
+        #    }, !obj:pylearn2.costs.mlp.WeightDecay {
+        #        coeffs: [ 0.0001, 0.0001 ]
+        #    }
+        #    ]
+        #},
+        #termination_criterion: !obj:pylearn2.termination_criteria.MonitorBased {
+        #    channel_name: 'valid_softmax_nll',
+        #    prop_decrease: 0.,
+        #    N: 10
+        #},
+    },
+    extensions: [
+        !obj:pylearn2.train_extensions.best_params.MonitorBasedSaveBest {
+             channel_name: 'valid_softmax_nll',
+             save_path: "mlp_1_hid_inp5_best.pkl"
+        },
+    ]        
+    
+}
