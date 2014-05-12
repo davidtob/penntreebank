@@ -4,8 +4,8 @@ __license__ = "3-clause BSD"
 
 import numpy
 from numpy.lib.stride_tricks import as_strided
-#from pylearn2.datasets.dense_design_matrix import DenseDesignMatrix
-from dense_design_matrix import DenseDesignMatrix
+from pylearn2.datasets.dense_design_matrix import DenseDesignMatrix
+#from dense_design_matrix import DenseDesignMatrix
 from pylearn2.utils import serial
 from pylearn2.utils.iteration import resolve_iterator_class
 
@@ -35,6 +35,29 @@ class PennTreebank(DenseDesignMatrix):
             self._raw_data = npz_data['valid_'+chars_or_words]
         elif which_set == 'test':
             self._raw_data = npz_data['test_'+chars_or_words]
+        elif which_set == 'train_train' or which_set == 'train_valid':
+            self._raw_data = npz_data['train_'+chars_or_words]
+            sentences = numpy.split( self._raw_data, numpy.where( self._raw_data==0 )[0] )
+            import random
+            random.seed(3)
+            valid_idx = random.sample( range(len(sentences)), int(len(sentences)*0.5) )
+            train_idx = range(len(sentences))
+            for idx in valid_idx:
+                train_idx.remove( idx )
+            
+            if which_set=='train_train':
+                idcs = train_idx
+            elif which_set=='train_valid':
+                idcs = valid_idx
+            else:
+                assert False
+            idcs.sort()
+            print idcs
+      
+            keep_sentences = []
+            for idx in idcs:
+                keep_sentences.append( sentences[ idx ] )
+            self._raw_data = numpy.hstack( keep_sentences )
         else:
             raise ValueError("Dataset must be one of 'train', 'valid' "
                              "or 'test'")
