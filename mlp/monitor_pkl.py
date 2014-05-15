@@ -8,6 +8,8 @@ import time
 import os
 
 #import pylab as plt
+import matplotlib
+#matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 def one_hot( x ):
@@ -17,14 +19,17 @@ def one_hot( x ):
             ret[i,j*50 + x[i,j]] = 1
     return ret
 
-def training_graph( train_bpc, valid_bpc ):
+def training_graph( train_bpc, valid_bpc, imagepath = None ):
     plt.title('bits per character')
     plt.plot(train_bpc, color='b', label="Train")
     plt.plot(valid_bpc, color='g', label="Valid")
     plt.plot( train_bpc*0 + 4.321, color='r', label="One char. dist. bpc" )
     plt.plot( train_bpc*0 + 3.36,  color='y', label="Two char. cond dist. bpc" )    
-    plt.draw()
-    plt.show()
+    if imagepath==None:
+      plt.draw()
+      plt.show()
+    else:
+      plt.savefig( imagepath )
     
 def generate_sentence( mlp ):
     inputs = mlp.get_input_space().get_total_dimension()/50
@@ -51,6 +56,12 @@ def generate_sentence( mlp ):
 
 plt.ion()
 pklfn = sys.argv[1]
+if len(sys.argv)>2:
+	imagepath = sys.argv[2]
+else:
+	imagepath = None
+
+print sys.argv
 while True:
     # Load MLP
     print "loading"
@@ -68,10 +79,10 @@ while True:
         print "best valid bpc", numpy.min(valid_bpc)
 
         # Make graph
-        training_graph( train_bpc, valid_bpc )
+        training_graph( train_bpc, valid_bpc, imagepath )
         
         # sentence
-        generate_sentence( mlp )
+        #generate_sentence( mlp )
 
     curr_time = load_time
     while curr_time==load_time:

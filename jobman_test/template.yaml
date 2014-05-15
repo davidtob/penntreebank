@@ -1,5 +1,5 @@
 !obj:pylearn2.train.Train {
-    dataset: &train !obj:penntree.PennTreebank {
+    dataset: &train !obj:penntreesparse.PennTreebank {
         which_set: 'train',
         chars_or_words: 'chars',
         ngram_size: &ngram_size 6
@@ -23,11 +23,11 @@
     },
     algorithm: !obj:pylearn2.training_algorithms.sgd.SGD {
         batch_size: 256,
-        learning_rate: %(learning_rate)f,
+        learning_rate: 0.3, #%(learning_rate)f,
         batches_per_iter: 1000,
         monitoring_dataset: {
             'train' : *train,
-            'valid' : !obj:penntree.PennTreebank {
+            'valid' : !obj:penntreesparse.PennTreebank {
                 which_set: 'valid',
                 chars_or_words: 'chars',
                 ngram_size: *ngram_size

@@ -12,8 +12,8 @@ from pylearn2.utils import serial
 
 
 class JobmanMonitor(TrainExtension):
-    def __init__( self, result_extractor ):
-        self.__dict__.update(locals())
+    def __init__( self ):
+        #self.__dict__.update(locals())
         self.train_obj = None
         self.channel = None
         self.state = None
