@@ -28,7 +28,10 @@ class JobmanMonitor(TrainExtension):
         self.state = state
 
     def on_monitor(self, model, dataset, algorithm):
-        if train_obj!=None and self.state!=None:
-          state.results = jobman.tools.resolve(state.extract_results)(train_obj)
+        print "jobman on monitor"
+        if self.train_obj!=None and self.state!=None:
+          print "calling extract_results"
+          self.state.results = jobman.tools.resolve(state.extract_results)(self.train_obj)
           if self.channel!=None:
-             channel.save()
+             print "calling channel save"
+             self.channel.save()
