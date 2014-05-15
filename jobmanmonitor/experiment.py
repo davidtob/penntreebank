@@ -66,11 +66,11 @@ def train_experiment(state, channel):
     train_obj = pylearn2.config.yaml_parse.load(final_yaml_str)
 
     for ext in train_obj.extensions:
-      if ext.__hasattr__('set_train_obj'):
+      if hasattr(ext, 'set_train_obj'):
         ext.set_train_obj( train_obj )
-      if ext.__hasattr__('set_jobman_channel'):
+      if hasattr(ext, 'set_jobman_channel'):
         ex.set_jobman_channel( channel )
-      if ext.__hasatrr__('set_jobman_state'):
+      if hasattr(ext, 'set_jobman_state'):
         ex.set_jobman_state( state )
 
     try:
