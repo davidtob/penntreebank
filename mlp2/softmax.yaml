@@ -1,0 +1,51 @@
+# This YAML file is an example of a simple language model which can be trained
+# on the Penn Treebank data. It uses a projection layer to embed words in a
+# 128-dimensional space. The concatenated embeddings go through a hidden tanh
+# layer after which a softmax output layer gives the word probabilities.
+#
+# This model trains for 72 epochs (approx. 1.5 hour) and achieves a
+# perplexity of 194.16 on the validation set (nll: 5.09).
+
+!obj:pylearn2.train.Train {
+    dataset: &train !obj:penntree.PennTreebank {
+        which_set: 'train',
+        chars_or_words: 'chars',
+        context_len: &context_len %(context_len)d
+    },
+    model: !obj:pylearn2.models.mlp.MLP {
+        layers: [
+            !obj:pylearn2.sandbox.nlp.models.mlp.ProjectionLayer {
+                layer_name: 'projection',
+                dim: 50,
+                irange: 0.01
+            }, !obj:pylearn2.sandbox.nlp.models.mlp.Softmax {
+                n_classes: 50,
+                layer_name: 'softmax',
+                irange: 0.01
+            }
+        ],
+        input_space: !obj:pylearn2.space.IndexSpace {
+            dim: *context_len,
+            max_labels: 50
+        }
+    },
+    algorithm: !obj:pylearn2.training_algorithms.sgd.SGD {
+        batch_size: 256,
+        batches_per_iter: 1000,
+        learning_rate: 1,
+        monitoring_dataset: {
+            'train' : *train,
+            'valid' : !obj:penntree.PennTreebank {
+                chars_or_words: 'chars',
+                which_set: 'valid',
+                context_len: *context_len
+            }
+        },
+        termination_criterion: !obj:pylearn2.termination_criteria.EpochCounter {
+            max_epochs: %(max_epochs)d
+        },
+    },
+    extensions: [
+        !obj:jobman_monitor_extension.JobmanMonitor {}
+    ]
+}

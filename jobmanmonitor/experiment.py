@@ -69,9 +69,9 @@ def train_experiment(state, channel):
       if hasattr(ext, 'set_train_obj'):
         ext.set_train_obj( train_obj )
       if hasattr(ext, 'set_jobman_channel'):
-        ex.set_jobman_channel( channel )
+        ext.set_jobman_channel( channel )
       if hasattr(ext, 'set_jobman_state'):
-        ex.set_jobman_state( state )
+        ext.set_jobman_state( state )
 
     try:
         iter(train_obj)
