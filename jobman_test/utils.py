@@ -12,7 +12,9 @@ def results_extractor(train_obj):
 
 
     bpc_history =  ('graph', 'BPC', 'epochs', { 'train': train_bpc_history,
-                                                'valid': valid_bpc_history } ) 
+                                                'valid': valid_bpc_history } )
+                                                
+    print "val", bpc_history[3]['train'][0], "type", type(bpc_history[3]['train'][0] )
     latest_train_bpc = int(1000*bpc_history[3]['train'][-1])/1000.0
     latest_valid_bpc = int(1000*bpc_history[3]['valid'][-1])/1000.0
     best_valid_bpc = int(1000*numpy.min( bpc_history[3]['valid'] ))/1000.0
