@@ -7,7 +7,7 @@
 # perplexity of 194.16 on the validation set (nll: 5.09).
 
 !obj:pylearn2.train.Train {
-    dataset: &train !obj:penntree.PennTreebank {
+    dataset: &train !obj:pylearn2.sandbox.nlp.datasets.penntree.PennTreebank {
         which_set: 'train',
         chars_or_words: 'chars',
         context_len: &context_len %(context_len)d
@@ -31,11 +31,12 @@
     },
     algorithm: !obj:pylearn2.training_algorithms.sgd.SGD {
         batch_size: 256,
-        batches_per_iter: 1000,
-        learning_rate: 1,
+        batches_per_iter: %(batches_per_iter)d,
+        learning_rate: %(learning_rate)f,
+        init_momentum: %(init_momentum)f,
         monitoring_dataset: {
             'train' : *train,
-            'valid' : !obj:penntree.PennTreebank {
+            'valid' : !obj:pylearn2.sandbox.nlp.datasets.penntree.PennTreebank {
                 chars_or_words: 'chars',
                 which_set: 'valid',
                 context_len: *context_len
@@ -46,6 +47,10 @@
         },
     },
     extensions: [
-        !obj:jobman_monitor_extension.JobmanMonitor {}
+        !obj:jobman_monitor_extension.JobmanMonitor {},
+        !obj:pylearn2.training_algorithms.sgd.OneOverEpoch {
+             start: %(oneoverepoch_start)d,
+             half_life: %(oneoverepoch_halflife)d
+        },
     ]
 }

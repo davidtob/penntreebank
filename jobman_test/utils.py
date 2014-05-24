@@ -4,8 +4,8 @@ import json
 
 def results_extractor(train_obj):
     channels = train_obj.model.monitor.channels
-    train_bpc_history = list( channels['train_softmax_nll'].val_record/numpy.log(2) )
-    valid_bpc_history = list( channels['valid_softmax_nll'].val_record/numpy.log(2) )
+    train_bpc_history = map( lambda x: float(x), list( channels['train_softmax_nll'].val_record/numpy.log(2) ) )
+    valid_bpc_history = map( lambda x: float(x), list( channels['valid_softmax_nll'].val_record/numpy.log(2) ) )
 
     print train_bpc_history
     print valid_bpc_history
